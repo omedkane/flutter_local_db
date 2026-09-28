@@ -126,6 +126,31 @@ class LocalDB {
     );
   }
 
+  /// Get record by ID synchronously (backward compatible API)
+  ///
+  /// Parameters:
+  /// - [key] - The key to retrieve
+  ///
+  /// Returns a [LocalDbResult] with the model or null if not found.
+  // ignore: non_constant_identifier_names
+  static LocalDbResult<LocalDbModel?, ErrorLocalDb> GetByIdSync(String key) {
+    if (!_isInitialized || _service == null) {
+      return Err(ErrorLocalDb.databaseError('Database not initialized'));
+    }
+
+    final result = _service!.retrieveSync(key);
+    return result.when(
+      ok: (model) => Ok(model),
+      err: (error) {
+        // Return null for not found errors to maintain backward compatibility
+        if (error.type == LocalDbErrorType.notFound) {
+          return const Ok(null);
+        }
+        return Err(error);
+      },
+    );
+  }
+
   /// Update existing record (backward compatible API)
   ///
   /// Parameters:

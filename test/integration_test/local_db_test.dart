@@ -79,6 +79,21 @@ void main() {
       );
     });
 
+    test('should GET (read) data by ID synchronously', () {
+      final result = service.retrieveSync('user-001');
+
+      expect(result.isOk, isTrue);
+      result.when(
+        ok: (model) {
+          expect(model.id, equals('user-001'));
+          expect(model.data['name'], equals('Alice'));
+          expect(model.data['age'], equals(25));
+          print('GET SYNC OK: ${model.id} -> ${model.data}');
+        },
+        err: (e) => fail('GET SYNC failed: ${e.message}'),
+      );
+    });
+
     test('should PUT (update) data', () async {
       final result = await service.store('user-001', LocalMethod.put, {
         'name': 'Alice Updated',

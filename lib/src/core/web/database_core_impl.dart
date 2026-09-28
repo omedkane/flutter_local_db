@@ -176,6 +176,16 @@ class DatabaseCore {
     return completer.future;
   }
 
+  /// Synchronous retrieval is unsupported on Web (IndexedDB is asynchronous)
+  LocalDbResult<LocalDbModel, ErrorLocalDb> getSync(String key) {
+    return Err(
+      ErrorLocalDb.platformError(
+        'Synchronous get is not supported on web',
+        context: key,
+      ),
+    );
+  }
+
   Future<LocalDbResult<LocalDbModel, ErrorLocalDb>> get(String key) async {
     if (_isClosed) {
       return Err(ErrorLocalDb.databaseError('Database is closed'));

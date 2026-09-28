@@ -126,6 +126,14 @@ class LocalDbService {
     return await _core.get(key);
   }
 
+  /// Synchronously retrieves data by key
+  LocalDbResult<LocalDbModel, ErrorLocalDb> retrieveSync(String key) {
+    _ensureInitialized();
+    Log.d('Retrieving data synchronously for key: $key');
+
+    return _core.getSync(key);
+  }
+
   /// Updates existing data with new values
   Future<LocalDbResult<LocalDbModel, ErrorLocalDb>> update(
     String key,

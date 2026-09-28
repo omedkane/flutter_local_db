@@ -308,7 +308,8 @@ class DatabaseCore {
     }
   }
 
-  Future<LocalDbResult<LocalDbModel, ErrorLocalDb>> get(String key) async {
+  /// Synchronously retrieves data by key
+  LocalDbResult<LocalDbModel, ErrorLocalDb> getSync(String key) {
     if (_isClosed) {
       return Err(ErrorLocalDb.databaseError('Database is closed'));
     }
@@ -380,6 +381,10 @@ class DatabaseCore {
     } finally {
       FfiUtils.freeDartString(keyPtr);
     }
+  }
+
+  Future<LocalDbResult<LocalDbModel, ErrorLocalDb>> get(String key) async {
+    return getSync(key);
   }
 
   Future<LocalDbResult<void, ErrorLocalDb>> delete(String key) async {
